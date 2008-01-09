@@ -1,0 +1,24 @@
+ORIG_PN="camljava"
+inherit ocaml java
+
+DESCRIPTION="Java OCaml bridge"
+HOMEPAGE="http://pauillac.inria.fr/~xleroy/software.html"
+SRC_URI="http://caml.inria.fr/distrib/bazar-ocaml/${ORIG_PN}-${PV}.tar.gz"
+
+MAKEOPTS+=" -j1"
+
+src_compile() {
+	lndirs
+	cd ${B}
+	cygmake JAVAC=${JAVAC} JDKHOME=/usr JNIINCLUDES='-I/usr/include/jamvm' JNILIBS='-ljvm'
+}
+
+src_test() {
+	cd ${B}/test
+	cygmake
+}
+
+src_install() {
+	cd ${B}/lib
+	cyginstall JAR=${JAR} CAMLJAVALIB=${D}${OCAML_LIBDIR}/${ORIG_PN}
+}
